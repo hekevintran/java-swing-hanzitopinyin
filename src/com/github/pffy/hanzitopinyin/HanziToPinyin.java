@@ -40,7 +40,7 @@ import com.github.pffy.chinese.Tone;
  * HanziToPinyin.java - Hanzi-to-Pinyin Converter. Requires Java 7.
  * 
  * @author The Pffy Authors
- * @version 0.9.2
+ * @version 0.9.5
  * 
  */
 
@@ -48,29 +48,35 @@ import com.github.pffy.chinese.Tone;
 public class HanziToPinyin extends javax.swing.JFrame {
 
   // Constants
+
+  // Meta
   private final String CRLF = "\r\n";
   private final String PRODUCT_NAME = "InPinyin Hanzi-to-Pinyin Converter";
-  private final String VERSION = CRLF + "Version 0.9.2";
-  private final String AUTHORS = CRLF + CRLF + "The Pffy Authors" + CRLF
-      + "https://github.com/pffy";
-  private final String LICENSE = CRLF + CRLF + "This is free, libre and "
-      + "open source software. " + CRLF + "http://unlicense.org/";
-  private final String PROJECT_URL = "https://github.com/pffy/" + "java-swing-hanzitopinyin";
+  private final String VERSION = " v0.9.5";
+  private final String AUTHOR = "The Pffy Authors";
+  private final String AUTHORURL = "https://github.com/pffy/";
+  private final String LICENSE = "This is free, libre and open source software.";
+  private final String LICENSEURL = "http://unlicense.org/";
+  private final String PROJECT_URL = AUTHORURL + "java-swing-hanzitopinyin";
   private final String ISSUES_URL = PROJECT_URL + "/issues";
 
+  // file menu text
   private final String ITEM_NEW = "New";
   private final String ITEM_CONVERT = "Convert";
   private final String ITEM_EXIT = "Exit";
 
+  // options menu text
   private final String ITEM_TONE_NUMBERS = "Convert to Tone Numbers";
   private final String ITEM_TONE_MARKS = "Convert to Tone Marks";
   private final String ITEM_TONES_OFF = "Convert with Tones Off";
   private final String ITEM_AUTOCONVERT = "Auto-Convert";
 
+  // help menu text
   private final String ITEM_REPORT = "Report Issue...";
   private final String ITEM_HOMEPAGE = "Project Home Page";
   private final String ITEM_ABOUT = "About InPinyin";
 
+  // size
   private final Dimension MIN_APP_SIZE = new Dimension(350, 350);
   private final Dimension PREFERRED_APP_SIZE = new Dimension(600, 600);
 
@@ -281,95 +287,6 @@ public class HanziToPinyin extends javax.swing.JFrame {
     pack();
   };
 
-  /**
-   * Event Listeners
-   * 
-   */
-
-  // handles key strokes
-  private KeyListener keyHandler = new KeyListener() {
-
-    public void keyTyped(KeyEvent e) {
-      // leave empty
-    }
-
-    public void keyPressed(KeyEvent e) {
-      // leave empty
-    }
-
-    public void keyReleased(KeyEvent e) {
-      autoConvertInput();
-    }
-  };
-
-
-  // handles JMenu actions
-  private ActionListener menuHandler = new ActionListener() {
-
-    public void actionPerformed(ActionEvent e) {
-
-      // FIXME: String cases with menu items? 
-      // Hmm. Not sure about this.
-
-      switch (e.getActionCommand()) {
-        
-      // file cases
-        case ITEM_NEW:
-          // clear everything
-          clearAllText();
-          break;
-        case ITEM_CONVERT:
-          // converts input on demand
-          convertInput();
-          break;
-        case ITEM_EXIT:
-          // closes program
-          System.exit(0);
-          break;
-
-        // options cases
-        case ITEM_TONE_NUMBERS:
-          resetAllToneOptions();
-          options_tone_numbers.setSelected(true);
-          hp.setMode(Tone.TONE_NUMBERS);
-          autoConvertInput();
-          break;
-        case ITEM_TONE_MARKS:
-          resetAllToneOptions();
-          options_tone_marks.setSelected(true);
-          hp.setMode(Tone.TONE_MARKS);
-          autoConvertInput();
-          break;
-        case ITEM_TONES_OFF:
-          resetAllToneOptions();
-          options_tones_off.setSelected(true);
-          hp.setMode(Tone.TONES_OFF);
-          autoConvertInput();
-          break;
-        case ITEM_AUTOCONVERT:
-          updateMenusByOptions();
-          break;
-
-        // help cases
-        case ITEM_REPORT:
-          // sends user to issues page
-          openWebpage(URI.create(ISSUES_URL));
-          break;
-        case ITEM_HOMEPAGE:
-          // sends user to home page
-          openWebpage(URI.create(PROJECT_URL));
-          break;
-        case ITEM_ABOUT:
-          showAboutBox();
-          break;
-
-        default:
-          // nothing
-          break;
-      }
-
-    };
-  };
 
 
   // clears both input and output
@@ -378,10 +295,12 @@ public class HanziToPinyin extends javax.swing.JFrame {
     tpane_output.setText("");
   };
 
+
   // shows about box
   private void showAboutBox() {
-    JOptionPane.showMessageDialog(null, PRODUCT_NAME + VERSION + AUTHORS + LICENSE,
-        "About InPinyin", JOptionPane.PLAIN_MESSAGE);
+    JOptionPane.showMessageDialog(null, PRODUCT_NAME + CRLF + VERSION + CRLF + CRLF + AUTHOR + CRLF
+        + AUTHORURL + CRLF + CRLF + LICENSE + CRLF + LICENSEURL, ITEM_ABOUT,
+        JOptionPane.PLAIN_MESSAGE);
   };
 
 
@@ -458,8 +377,96 @@ public class HanziToPinyin extends javax.swing.JFrame {
 
 
   /**
+   * Event Listeners
+   * 
+   */
+
+  // handles key strokes
+  private KeyListener keyHandler = new KeyListener() {
+
+    public void keyTyped(KeyEvent e) {
+      // leave empty
+    }
+
+    public void keyPressed(KeyEvent e) {
+      // leave empty
+    }
+
+    public void keyReleased(KeyEvent e) {
+      autoConvertInput();
+    }
+  };
+
+  // handles JMenu actions
+  private ActionListener menuHandler = new ActionListener() {
+
+    public void actionPerformed(ActionEvent e) {
+
+      
+      // file menu items
+      
+      if (e.getSource() == file_new) {
+        clearAllText();
+      }
+
+      if (e.getSource() == file_convert) {
+        convertInput();
+      }
+
+      if (e.getSource() == file_exit) {
+        System.exit(0);
+      }
+
+
+      // options menu items
+      
+      if (e.getSource() == options_tone_numbers) {
+        resetAllToneOptions();
+        options_tone_numbers.setSelected(true);
+        hp.setMode(Tone.TONE_NUMBERS);
+        autoConvertInput();
+      }
+
+      if (e.getSource() == options_tone_marks) {
+        resetAllToneOptions();
+        options_tone_marks.setSelected(true);
+        hp.setMode(Tone.TONE_MARKS);
+        autoConvertInput();
+      }
+
+      if (e.getSource() == options_tones_off) {
+        resetAllToneOptions();
+        options_tones_off.setSelected(true);
+        hp.setMode(Tone.TONES_OFF);
+        autoConvertInput();
+      }
+
+      if (e.getSource() == options_autoconvert) {
+        updateMenusByOptions();
+      }
+
+
+      // help menu items
+
+      if (e.getSource() == help_report) {
+        openWebpage(URI.create(ISSUES_URL));
+      }
+
+      if (e.getSource() == help_homepage) {
+        openWebpage(URI.create(PROJECT_URL));
+      }
+
+      if (e.getSource() == help_about) {
+        showAboutBox();
+      }
+
+    };
+  };
+
+  /**
    * Main method. Creates and shows the form.
-   * @param args 
+   * 
+   * @param args
    */
   public static void main(String args[]) {
 

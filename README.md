@@ -5,7 +5,7 @@ Hanzi-to-pinyin: Convert Chinese characters to Hanyu Pinyin with display options
 
 + [Production Release! v1.0](https://github.com/pffy/java-swing-hanzitopinyin/releases) **new!**
 + Requires Java 7.
-+ Runs on Windows, Mac and Linux. More [Feature List](#features) 
++ Simple. Flexible. Runs on Windows, Mac and Linux. [Learn More](#features). 
 
 ## [Download Hanzi-to-Pinyin](https://github.com/pffy/java-swing-hanzitopinyin/releases) ##
 
@@ -23,3 +23,4 @@ Hanzi-to-pinyin: Convert Chinese characters to Hanyu Pinyin with display options
     + Tones Off
   + Auto-Convert 
     + Any changes on the left are instantly displayed on the right.
+    + You can turn of the Auto-Convert feature for very large conversion.

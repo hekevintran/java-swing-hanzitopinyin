@@ -40,7 +40,7 @@ import com.github.pffy.chinese.Tone;
  * HanziToPinyin.java - Hanzi-to-Pinyin Converter. Requires Java 7.
  * 
  * @author The Pffy Authors
- * @version 0.9.5
+ * @version 1.0
  * 
  */
 
@@ -52,7 +52,7 @@ public class HanziToPinyin extends javax.swing.JFrame {
   // Meta
   private final String CRLF = "\r\n";
   private final String PRODUCT_NAME = "InPinyin Hanzi-to-Pinyin Converter";
-  private final String VERSION = " v0.9.5";
+  private final String VERSION = " v1.0";
   private final String AUTHOR = "The Pffy Authors";
   private final String AUTHORURL = "https://github.com/pffy/";
   private final String LICENSE = "This is free, libre and open source software.";

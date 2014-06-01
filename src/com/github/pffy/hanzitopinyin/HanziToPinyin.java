@@ -1,21 +1,23 @@
 /*
  * This is free and unencumbered software released into the public domain.
  * 
- * Anyone is free to copy, modify, publish, use, compile, sell, or distribute this software, either
- * in source code form or as a compiled binary, for any purpose, commercial or non-commercial, and
- * by any means.
+ * Anyone is free to copy, modify, publish, use, compile, sell, or distribute
+ * this software, either in source code form or as a compiled binary, for any
+ * purpose, commercial or non-commercial, and by any means.
  * 
- * In jurisdictions that recognize copyright laws, the author or authors of this software dedicate
- * any and all copyright interest in the software to the public domain. We make this dedication for
- * the benefit of the public at large and to the detriment of our heirs and successors. We intend
- * this dedication to be an overt act of relinquishment in perpetuity of all present and future
+ * In jurisdictions that recognize copyright laws, the author or authors of this
+ * software dedicate any and all copyright interest in the software to the
+ * public domain. We make this dedication for the benefit of the public at large
+ * and to the detriment of our heirs and successors. We intend this dedication
+ * to be an overt act of relinquishment in perpetuity of all present and future
  * rights to this software under copyright law.
  * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
- * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * 
  * For more information, please refer to <http://unlicense.org/>
  */
@@ -24,6 +26,7 @@ package com.github.pffy.hanzitopinyin;
 
 import java.awt.Desktop;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -32,6 +35,7 @@ import java.io.IOException;
 import java.net.URI;
 
 import javax.swing.JOptionPane;
+import javax.swing.text.DefaultCaret;
 
 import com.github.pffy.chinese.HanyuPinyin;
 import com.github.pffy.chinese.Tone;
@@ -40,79 +44,96 @@ import com.github.pffy.chinese.Tone;
  * HanziToPinyin.java - Hanzi-to-Pinyin Converter. Requires Java 7.
  * 
  * @author The Pffy Authors
- * @version 1.0
+ * @version 1.1
  * 
  */
 
 @SuppressWarnings("serial")
 public class HanziToPinyin extends javax.swing.JFrame {
 
-  // Constants
+  // CONSTANTS
 
-  // Meta
-  private final String CRLF = "\r\n";
-  private final String PRODUCT_NAME = "InPinyin Hanzi-to-Pinyin Converter";
-  private final String VERSION = " v1.0";
+  private final String CRLF = System.lineSeparator();
+  private final String DBL_CRLF = this.CRLF + this.CRLF;
+
+  // meta
+  private final String PRODUCT_NAME = "InPinyin";
+  private final String PRODUCT_TITLE = this.PRODUCT_NAME
+      + ": Hanzi-to-Pinyin Converter";
+  private final String VERSION = " v1.1";
+
   private final String AUTHOR = "The Pffy Authors";
-  private final String AUTHORURL = "https://github.com/pffy/";
-  private final String LICENSE = "This is free, libre and open source software.";
-  private final String LICENSEURL = "http://unlicense.org/";
-  private final String PROJECT_URL = AUTHORURL + "java-swing-hanzitopinyin";
+  private final String AUTHOR_URL = "https://github.com/pffy/";
+
+  private final String LICENSE =
+      "This is free, libre and open source software.";
+  private final String LICENSE_URL = "http://unlicense.org/";
+
+  private final String PROJECT_URL = AUTHOR_URL + "java-swing-hanzitopinyin";
   private final String ISSUES_URL = PROJECT_URL + "/issues";
 
+  // menu
+  private final String MENU_FILE = "File";
+  private final String MENU_OPTIONS = "Options";
+  private final String MENU_HELP = "Help";
+
   // file menu text
-  private final String ITEM_NEW = "New";
-  private final String ITEM_CONVERT = "Convert";
-  private final String ITEM_EXIT = "Exit";
+  private final String ITEM_FILE_NEW = "New";
+  private final String ITEM_FILE_CONVERT = "Convert / Refresh";
+  private final String ITEM_FILE_EXIT = "Exit";
 
   // options menu text
   private final String ITEM_TONE_NUMBERS = "Convert to Tone Numbers";
   private final String ITEM_TONE_MARKS = "Convert to Tone Marks";
   private final String ITEM_TONES_OFF = "Convert with Tones Off";
-  private final String ITEM_AUTOCONVERT = "Auto-Convert";
 
   // help menu text
-  private final String ITEM_REPORT = "Report Issue...";
-  private final String ITEM_HOMEPAGE = "Project Home Page";
-  private final String ITEM_ABOUT = "About InPinyin";
+  private final String ITEM_HELP_REPORT = "Report Issue...";
+  private final String ITEM_HELP_HOMEPAGE = "Project Home Page";
+  private final String ITEM_HELP_ABOUT = "About " + this.PRODUCT_NAME;
 
   // size
-  private final Dimension MIN_APP_SIZE = new Dimension(350, 350);
-  private final Dimension PREFERRED_APP_SIZE = new Dimension(600, 600);
+  private final Dimension DIMENSION_300 = new Dimension(300, 300);
+  private final Dimension DIMENSION_350 = new Dimension(350, 350);
+  private final Dimension DIMENSION_600 = new Dimension(600, 600);
 
-  // menu
-  private javax.swing.JMenuBar menubar_menu;
-
-  // file menu
-  private javax.swing.JMenu menu_file;
-  private javax.swing.JMenuItem file_new;
-  private javax.swing.JMenuItem file_convert;
-  private javax.swing.JPopupMenu.Separator file_separator;
-  private javax.swing.JMenuItem file_exit;
-
-  // help menu
-  private javax.swing.JMenu menu_help;
-  private javax.swing.JMenuItem help_report;
-  private javax.swing.JPopupMenu.Separator help_separator;
-  private javax.swing.JMenuItem help_homepage;
-  private javax.swing.JMenuItem help_about;
-
-  // options
-  private javax.swing.JMenu menu_options;
-  private javax.swing.JCheckBoxMenuItem options_tone_numbers;
-  private javax.swing.JCheckBoxMenuItem options_tone_marks;
-  private javax.swing.JCheckBoxMenuItem options_tones_off;
-  private javax.swing.JPopupMenu.Separator options_separator;
-  private javax.swing.JCheckBoxMenuItem options_autoconvert;
-
-  // inputs and outputs
-  private javax.swing.JScrollPane spane_input;
-  private javax.swing.JScrollPane spane_output;
-  private javax.swing.JTextPane tpane_input;
-  private javax.swing.JTextPane tpane_output;
+  // OTHER FIELDS
 
   // HanyuPinyin object
   HanyuPinyin hp = new HanyuPinyin();
+
+  /**
+   * Swing UI Elements below.
+   */
+
+  // menu
+  private javax.swing.JMenuBar menubarMenu;
+
+  // file menu
+  private javax.swing.JMenu menuFile;
+  private javax.swing.JMenuItem fileNew;
+  private javax.swing.JMenuItem fileConvert;
+  private javax.swing.JPopupMenu.Separator fileSeparator;
+  private javax.swing.JMenuItem fileExit;
+
+  // help menu
+  private javax.swing.JMenu menuHelp;
+  private javax.swing.JMenuItem helpReport;
+  private javax.swing.JPopupMenu.Separator helpSeparator;
+  private javax.swing.JMenuItem helpHomepage;
+  private javax.swing.JMenuItem helpAbout;
+
+  // options
+  private javax.swing.JMenu menuOptions;
+  private javax.swing.JCheckBoxMenuItem optionsToneNumbers;
+  private javax.swing.JCheckBoxMenuItem optionsToneMarks;
+  private javax.swing.JCheckBoxMenuItem optionsTonesOff;
+
+  // inputs and outputs
+  private javax.swing.JScrollPane scrollPaneInput;
+  private javax.swing.JScrollPane scrollPaneOutput;
+  private javax.swing.JTextPane textPaneInput;
+  private javax.swing.JTextPane textPaneOutput;
 
 
   /**
@@ -128,181 +149,188 @@ public class HanziToPinyin extends javax.swing.JFrame {
   // setup components
   private void initComponents() {
 
-    // menu
-    menubar_menu = new javax.swing.JMenuBar();
-
-    // file menu
-    menu_file = new javax.swing.JMenu();
-    menu_file.setMnemonic('f');
-    menu_file.setText("File");
-
-    file_new = new javax.swing.JMenuItem();
-    file_convert = new javax.swing.JMenuItem();
-    file_separator = new javax.swing.JPopupMenu.Separator();
-    file_exit = new javax.swing.JMenuItem();
-
-
-    // options menu
-    menu_options = new javax.swing.JMenu();
-    menu_options.setMnemonic('o');
-    menu_options.setText("Options");
-
-    options_tone_numbers = new javax.swing.JCheckBoxMenuItem();
-    options_tone_marks = new javax.swing.JCheckBoxMenuItem();
-    options_tones_off = new javax.swing.JCheckBoxMenuItem();
-    options_separator = new javax.swing.JPopupMenu.Separator();
-    options_autoconvert = new javax.swing.JCheckBoxMenuItem();
-
-    // help menu
-    menu_help = new javax.swing.JMenu();
-    menu_help.setMnemonic('H');
-    menu_help.setText("Help");
-
-    help_report = new javax.swing.JMenuItem();
-    help_separator = new javax.swing.JPopupMenu.Separator();
-    help_homepage = new javax.swing.JMenuItem();
-    help_about = new javax.swing.JMenuItem();
-
     // inputs and outputs
-    spane_input = new javax.swing.JScrollPane();
-    tpane_input = new javax.swing.JTextPane();
-    spane_output = new javax.swing.JScrollPane();
-    tpane_output = new javax.swing.JTextPane();
+    this.scrollPaneInput = new javax.swing.JScrollPane();
+    this.textPaneInput = new javax.swing.JTextPane();
+    this.scrollPaneOutput = new javax.swing.JScrollPane();
+    this.textPaneOutput = new javax.swing.JTextPane();
+
+    // input pane
+    this.textPaneInput.addKeyListener(this.keyHandler);
+    this.textPaneInput.setFont(new Font("KaiTi", 0, 16));
+    this.textPaneInput.setMinimumSize(this.DIMENSION_300);
+    this.textPaneInput.setPreferredSize(this.DIMENSION_300);
+
+    this.scrollPaneInput.setViewportView(this.textPaneInput);
+
+    // output pane
+    this.textPaneOutput.setEditable(false);
+
+    this.textPaneOutput.setMinimumSize(this.DIMENSION_300);
+    this.textPaneOutput.setPreferredSize(this.DIMENSION_300);
+    this.scrollPaneOutput.setViewportView(this.textPaneOutput);
+
+    // prevents scrolling in the output pane
+    DefaultCaret outputCaret = (DefaultCaret) this.textPaneOutput.getCaret();
+    outputCaret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+
 
     // frame properties
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-    setTitle(PRODUCT_NAME);
-
-    // frame sizing
-    setMinimumSize(MIN_APP_SIZE);
-    setPreferredSize(PREFERRED_APP_SIZE);
+    setTitle(this.PRODUCT_TITLE);
+    setMinimumSize(this.DIMENSION_350);
+    setPreferredSize(this.DIMENSION_600);
 
     // BoxLayout for left-right panes
     getContentPane().setLayout(
-        new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.LINE_AXIS));
+        new javax.swing.BoxLayout(getContentPane(),
+            javax.swing.BoxLayout.X_AXIS));
 
-    tpane_input.addKeyListener(keyHandler);
 
-    spane_input.setViewportView(tpane_input);
-    getContentPane().add(spane_input);
+    getContentPane().add(this.scrollPaneInput);
+    getContentPane().add(this.scrollPaneOutput);
 
-    tpane_output.setEditable(false);
-    spane_output.setViewportView(tpane_output);
 
-    getContentPane().add(spane_output);
+    /**
+     * Swing UI Menu components below
+     */
 
-    // file
-    file_new.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N,
-        java.awt.event.InputEvent.CTRL_MASK));
-    file_new.setMnemonic('N');
-    file_new.setText(ITEM_NEW);
-    file_new.addActionListener(menuHandler);
+    // menu
+    this.menubarMenu = new javax.swing.JMenuBar();
 
-    menu_file.add(file_new);
+    // file menu
+    this.menuFile = new javax.swing.JMenu();
+    this.menuFile.setMnemonic('f');
+    this.menuFile.setText(this.MENU_FILE);
 
-    file_convert.setAccelerator(javax.swing.KeyStroke
-        .getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
-    file_convert.setMnemonic('C');
-    file_convert.setText(ITEM_CONVERT);
-    file_convert.addActionListener(menuHandler);
+    this.fileNew = new javax.swing.JMenuItem();
+    this.fileConvert = new javax.swing.JMenuItem();
+    this.fileSeparator = new javax.swing.JPopupMenu.Separator();
+    this.fileExit = new javax.swing.JMenuItem();
 
-    menu_file.add(file_convert);
-    menu_file.add(file_separator);
+    // options menu
+    this.menuOptions = new javax.swing.JMenu();
+    this.menuOptions.setMnemonic('o');
+    this.menuOptions.setText(this.MENU_OPTIONS);
 
-    file_exit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W,
-        java.awt.event.InputEvent.CTRL_MASK));
-    file_exit.setMnemonic('x');
-    file_exit.setText(ITEM_EXIT);
-    file_exit.addActionListener(menuHandler);
+    this.optionsToneNumbers = new javax.swing.JCheckBoxMenuItem();
+    this.optionsToneMarks = new javax.swing.JCheckBoxMenuItem();
+    this.optionsTonesOff = new javax.swing.JCheckBoxMenuItem();
 
-    menu_file.add(file_exit);
-    menubar_menu.add(menu_file);
+    // help menu
+    this.menuHelp = new javax.swing.JMenu();
+    this.menuHelp.setMnemonic('H');
+    this.menuHelp.setText(this.MENU_HELP);
+
+    this.helpReport = new javax.swing.JMenuItem();
+    this.helpSeparator = new javax.swing.JPopupMenu.Separator();
+    this.helpHomepage = new javax.swing.JMenuItem();
+    this.helpAbout = new javax.swing.JMenuItem();
+
+    // FILE
+
+    // file > new
+    this.fileNew.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
+        java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
+    this.fileNew.setMnemonic('N');
+    this.fileNew.setText(this.ITEM_FILE_NEW);
+    this.fileNew.addActionListener(this.menuHandler);
+    this.menuFile.add(this.fileNew);
+
+    // file > convert
+    this.fileConvert.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
+        java.awt.event.KeyEvent.VK_F5, 0));
+    this.fileConvert.setMnemonic('C');
+    this.fileConvert.setText(this.ITEM_FILE_CONVERT);
+    this.fileConvert.addActionListener(this.menuHandler);
+    this.menuFile.add(this.fileConvert);
+
+    this.menuFile.add(this.fileSeparator);
+
+    // file > exit
+    this.fileExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
+        java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
+    this.fileExit.setMnemonic('x');
+    this.fileExit.setText(this.ITEM_FILE_EXIT);
+    this.fileExit.addActionListener(this.menuHandler);
+
+    this.menuFile.add(this.fileExit);
+    this.menubarMenu.add(this.menuFile);
 
     // OPTIONS
 
     // options > tone numbers
-    options_tone_numbers.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
+    this.optionsToneNumbers.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
         java.awt.event.KeyEvent.VK_F7, 0));
-    options_tone_numbers.setText(ITEM_TONE_NUMBERS);
-    options_tone_numbers.addActionListener(menuHandler);
+    this.optionsToneNumbers.setText(this.ITEM_TONE_NUMBERS);
+    this.optionsToneNumbers.addActionListener(this.menuHandler);
 
-    menu_options.add(options_tone_numbers);
+    this.menuOptions.add(this.optionsToneNumbers);
 
     // options > tone marks
-    options_tone_marks.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
+    this.optionsToneMarks.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
         java.awt.event.KeyEvent.VK_F8, 0));
-    options_tone_marks.setText(ITEM_TONE_MARKS);
-    options_tone_marks.addActionListener(menuHandler);
+    this.optionsToneMarks.setText(this.ITEM_TONE_MARKS);
+    this.optionsToneMarks.addActionListener(this.menuHandler);
 
-    menu_options.add(options_tone_marks);
+    this.menuOptions.add(this.optionsToneMarks);
 
     // options > tones off
-    options_tones_off.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
+    this.optionsTonesOff.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
         java.awt.event.KeyEvent.VK_F9, 0));
-    options_tones_off.setText(ITEM_TONES_OFF);
-    options_tones_off.addActionListener(menuHandler);
+    this.optionsTonesOff.setText(this.ITEM_TONES_OFF);
+    this.optionsTonesOff.addActionListener(this.menuHandler);
 
-    menu_options.add(options_tones_off);
-    menu_options.add(options_separator);
-
-    // options > auto-convert
-    options_autoconvert.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
-        java.awt.event.KeyEvent.VK_F10, 0));
-    options_autoconvert.setSelected(true);
-    options_autoconvert.setText(ITEM_AUTOCONVERT);
-    options_autoconvert.addActionListener(menuHandler);
-
-    menu_options.add(options_autoconvert);
-    menubar_menu.add(menu_options);
+    this.menuOptions.add(this.optionsTonesOff);
+    
+    this.menubarMenu.add(this.menuOptions);
 
     // HELP
 
     // help > report issue
-    help_report
-        .setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
-    help_report.setMnemonic('i');
-    help_report.setText(ITEM_REPORT);
-    help_report.addActionListener(menuHandler);
+    this.helpReport.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
+        java.awt.event.KeyEvent.VK_F2, 0));
+    this.helpReport.setMnemonic('i');
+    this.helpReport.setText(this.ITEM_HELP_REPORT);
+    this.helpReport.addActionListener(this.menuHandler);
 
-    menu_help.add(help_report);
-    menu_help.add(help_separator);
+    this.menuHelp.add(this.helpReport);
+    this.menuHelp.add(this.helpSeparator);
 
     // help > home page
-    help_homepage.setMnemonic('h');
-    help_homepage.setText(ITEM_HOMEPAGE);
-    help_homepage.addActionListener(menuHandler);
+    this.helpHomepage.setMnemonic('h');
+    this.helpHomepage.setText(this.ITEM_HELP_HOMEPAGE);
+    this.helpHomepage.addActionListener(this.menuHandler);
 
-    menu_help.add(help_homepage);
+    this.menuHelp.add(this.helpHomepage);
 
     // help > about
-    help_about.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
-    help_about.setMnemonic('a');
-    help_about.setText(ITEM_ABOUT);
-    help_about.addActionListener(menuHandler);
+    this.helpAbout.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
+        java.awt.event.KeyEvent.VK_F1, 0));
+    this.helpAbout.setMnemonic('a');
+    this.helpAbout.setText(this.ITEM_HELP_ABOUT);
+    this.helpAbout.addActionListener(this.menuHandler);
 
-    menu_help.add(help_about);
-    menubar_menu.add(menu_help);
+    this.menuHelp.add(this.helpAbout);
+    this.menubarMenu.add(this.menuHelp);
 
-    setJMenuBar(menubar_menu);
+    setJMenuBar(this.menubarMenu);
     pack();
   };
 
-
-
   // clears both input and output
   private void clearAllText() {
-    tpane_input.setText("");
-    tpane_output.setText("");
+    this.textPaneInput.setText("");
+    this.textPaneOutput.setText("");
   };
-
 
   // shows about box
   private void showAboutBox() {
-    JOptionPane.showMessageDialog(null, PRODUCT_NAME + CRLF + VERSION + CRLF + CRLF + AUTHOR + CRLF
-        + AUTHORURL + CRLF + CRLF + LICENSE + CRLF + LICENSEURL, ITEM_ABOUT,
-        JOptionPane.PLAIN_MESSAGE);
+    JOptionPane.showMessageDialog(null, this.PRODUCT_TITLE + this.CRLF
+        + this.VERSION + this.DBL_CRLF + this.AUTHOR + this.CRLF
+        + this.AUTHOR_URL + this.DBL_CRLF + this.LICENSE + this.CRLF
+        + this.LICENSE_URL, this.ITEM_HELP_ABOUT, JOptionPane.PLAIN_MESSAGE);
   };
-
 
   // opens web page in default browser
   private void openWebpage(URI uri) {
@@ -310,7 +338,8 @@ public class HanziToPinyin extends javax.swing.JFrame {
     // code solution found at:
     // http://stackoverflow.com/a/10967469
 
-    Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+    Desktop desktop =
+        Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
     if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
       try {
         desktop.browse(uri);
@@ -321,25 +350,10 @@ public class HanziToPinyin extends javax.swing.JFrame {
     }
   };
 
-
-  // converts if autoConvert option is selected
-  private void autoConvertInput() {
-    if (options_autoconvert.isSelected()) {
-      convertInput();
-    }
-  };
-
-
   // updates menus based on options
   private void updateMenusByOptions() {
-    if (options_autoconvert.isSelected()) {
-      file_convert.setEnabled(false);
-    } else {
-      file_convert.setEnabled(true);
-    }
-    autoConvertInput();
+    convertInput();
   };
-
 
   // updates tone options based on HanyuPinyin object
   private void updateToneOptions() {
@@ -347,34 +361,31 @@ public class HanziToPinyin extends javax.swing.JFrame {
     resetAllToneOptions();
     switch (hp.getMode()) {
       case TONE_MARKS:
-        options_tone_marks.setSelected(true);
+        this.optionsToneMarks.setSelected(true);
         break;
       case TONES_OFF:
-        options_tones_off.setSelected(true);
+        this.optionsTonesOff.setSelected(true);
         break;
       default:
-        options_tone_numbers.setSelected(true);
+        this.optionsToneNumbers.setSelected(true);
         break;
     }
 
-    autoConvertInput();
+    convertInput();
   };
-
 
   // convert input and display output
   private void convertInput() {
-    hp.setInput(tpane_input.getText());
-    tpane_output.setText(hp.toString());
+    this.hp.setInput(this.textPaneInput.getText());
+    this.textPaneOutput.setText(this.hp.toString());
   };
-
 
   // clear all tone options
   private void resetAllToneOptions() {
-    options_tone_numbers.setSelected(false);
-    options_tone_marks.setSelected(false);
-    options_tones_off.setSelected(false);
+    this.optionsToneNumbers.setSelected(false);
+    this.optionsToneMarks.setSelected(false);
+    this.optionsTonesOff.setSelected(false);
   };
-
 
   /**
    * Event Listeners
@@ -393,7 +404,7 @@ public class HanziToPinyin extends javax.swing.JFrame {
     }
 
     public void keyReleased(KeyEvent e) {
-      autoConvertInput();
+      // leave empty
     }
   };
 
@@ -402,61 +413,54 @@ public class HanziToPinyin extends javax.swing.JFrame {
 
     public void actionPerformed(ActionEvent e) {
 
-      
       // file menu items
-      
-      if (e.getSource() == file_new) {
+
+      if (e.getSource() == fileNew) {
         clearAllText();
       }
 
-      if (e.getSource() == file_convert) {
+      if (e.getSource() == fileConvert) {
         convertInput();
       }
 
-      if (e.getSource() == file_exit) {
+      if (e.getSource() == fileExit) {
         System.exit(0);
       }
 
-
       // options menu items
-      
-      if (e.getSource() == options_tone_numbers) {
+
+      if (e.getSource() == optionsToneNumbers) {
         resetAllToneOptions();
-        options_tone_numbers.setSelected(true);
+        optionsToneNumbers.setSelected(true);
         hp.setMode(Tone.TONE_NUMBERS);
-        autoConvertInput();
+        convertInput();
       }
 
-      if (e.getSource() == options_tone_marks) {
+      if (e.getSource() == optionsToneMarks) {
         resetAllToneOptions();
-        options_tone_marks.setSelected(true);
+        optionsToneMarks.setSelected(true);
         hp.setMode(Tone.TONE_MARKS);
-        autoConvertInput();
+        convertInput();
       }
 
-      if (e.getSource() == options_tones_off) {
+      if (e.getSource() == optionsTonesOff) {
         resetAllToneOptions();
-        options_tones_off.setSelected(true);
+        optionsTonesOff.setSelected(true);
         hp.setMode(Tone.TONES_OFF);
-        autoConvertInput();
+        convertInput();
       }
-
-      if (e.getSource() == options_autoconvert) {
-        updateMenusByOptions();
-      }
-
 
       // help menu items
 
-      if (e.getSource() == help_report) {
+      if (e.getSource() == helpReport) {
         openWebpage(URI.create(ISSUES_URL));
       }
 
-      if (e.getSource() == help_homepage) {
+      if (e.getSource() == helpHomepage) {
         openWebpage(URI.create(PROJECT_URL));
       }
 
-      if (e.getSource() == help_about) {
+      if (e.getSource() == helpAbout) {
         showAboutBox();
       }
 

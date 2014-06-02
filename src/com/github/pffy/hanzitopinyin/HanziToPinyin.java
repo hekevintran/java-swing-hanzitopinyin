@@ -44,7 +44,7 @@ import com.github.pffy.chinese.Tone;
  * HanziToPinyin.java - Hanzi-to-Pinyin Converter. Requires Java 7.
  * 
  * @author The Pffy Authors
- * @version 1.1
+ * @version 1.2
  * 
  */
 
@@ -60,7 +60,7 @@ public class HanziToPinyin extends javax.swing.JFrame {
   private final String PRODUCT_NAME = "InPinyin";
   private final String PRODUCT_TITLE = this.PRODUCT_NAME
       + ": Hanzi-to-Pinyin Converter";
-  private final String VERSION = " v1.1";
+  private final String VERSION = " v1.2";
 
   private final String AUTHOR = "The Pffy Authors";
   private final String AUTHOR_URL = "https://github.com/pffy/";
@@ -76,6 +76,8 @@ public class HanziToPinyin extends javax.swing.JFrame {
   private final String MENU_FILE = "File";
   private final String MENU_OPTIONS = "Options";
   private final String MENU_HELP = "Help";
+  private final String MENU_SHORTCUTS =
+      "[F5] Refresh, [F7] Tone Numbers, [F8] Marks, [F9] Off, [Ctrl + V] Paste Convert";
 
   // file menu text
   private final String ITEM_FILE_NEW = "New";
@@ -97,10 +99,15 @@ public class HanziToPinyin extends javax.swing.JFrame {
   private final Dimension DIMENSION_350 = new Dimension(350, 350);
   private final Dimension DIMENSION_600 = new Dimension(600, 600);
 
+  private final int FONT_SIZE_SHORTCUTS = 10;
+
   // OTHER FIELDS
 
   // HanyuPinyin object
-  HanyuPinyin hp = new HanyuPinyin();
+  HanyuPinyin hp = new HanyuPinyin(null, Tone.TONE_MARKS);
+
+  // flags
+  private boolean pasteAndConvertEnabled = false;
 
   /**
    * Swing UI Elements below.
@@ -128,6 +135,9 @@ public class HanziToPinyin extends javax.swing.JFrame {
   private javax.swing.JCheckBoxMenuItem optionsToneNumbers;
   private javax.swing.JCheckBoxMenuItem optionsToneMarks;
   private javax.swing.JCheckBoxMenuItem optionsTonesOff;
+
+  // shortcuts
+  private javax.swing.JMenu menuShortcuts;
 
   // inputs and outputs
   private javax.swing.JScrollPane scrollPaneInput;
@@ -157,7 +167,6 @@ public class HanziToPinyin extends javax.swing.JFrame {
 
     // input pane
     this.textPaneInput.addKeyListener(this.keyHandler);
-    this.textPaneInput.setFont(new Font("KaiTi", 0, 16));
     this.textPaneInput.setMinimumSize(this.DIMENSION_300);
     this.textPaneInput.setPreferredSize(this.DIMENSION_300);
 
@@ -235,6 +244,14 @@ public class HanziToPinyin extends javax.swing.JFrame {
     this.fileNew.setMnemonic('N');
     this.fileNew.setText(this.ITEM_FILE_NEW);
     this.fileNew.addActionListener(this.menuHandler);
+
+    // for Mac OS
+    /*
+     * this.fileNew.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
+     * java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.META_MASK));
+     */
+
+
     this.menuFile.add(this.fileNew);
 
     // file > convert
@@ -254,6 +271,13 @@ public class HanziToPinyin extends javax.swing.JFrame {
     this.fileExit.setText(this.ITEM_FILE_EXIT);
     this.fileExit.addActionListener(this.menuHandler);
 
+
+    /*
+     * // for Mac OS
+     * this.fileExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
+     * java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.META_MASK));
+     */
+
     this.menuFile.add(this.fileExit);
     this.menubarMenu.add(this.menuFile);
 
@@ -267,12 +291,11 @@ public class HanziToPinyin extends javax.swing.JFrame {
 
     this.menuOptions.add(this.optionsToneNumbers);
 
-    // options > tone marks
+    // options > tone marks (default option)
     this.optionsToneMarks.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
         java.awt.event.KeyEvent.VK_F8, 0));
     this.optionsToneMarks.setText(this.ITEM_TONE_MARKS);
     this.optionsToneMarks.addActionListener(this.menuHandler);
-
     this.menuOptions.add(this.optionsToneMarks);
 
     // options > tones off
@@ -282,7 +305,7 @@ public class HanziToPinyin extends javax.swing.JFrame {
     this.optionsTonesOff.addActionListener(this.menuHandler);
 
     this.menuOptions.add(this.optionsTonesOff);
-    
+
     this.menubarMenu.add(this.menuOptions);
 
     // HELP
@@ -313,6 +336,15 @@ public class HanziToPinyin extends javax.swing.JFrame {
 
     this.menuHelp.add(this.helpAbout);
     this.menubarMenu.add(this.menuHelp);
+
+    // never enabled shortcuts
+    this.menuShortcuts = new javax.swing.JMenu();
+    this.menuShortcuts.setText(this.MENU_SHORTCUTS);
+    this.menuShortcuts
+        .setFont(new Font("Courier", 0, this.FONT_SIZE_SHORTCUTS));
+    this.menuShortcuts.setEnabled(false);
+
+    this.menubarMenu.add(this.menuShortcuts);
 
     setJMenuBar(this.menubarMenu);
     pack();
@@ -359,15 +391,17 @@ public class HanziToPinyin extends javax.swing.JFrame {
   private void updateToneOptions() {
 
     resetAllToneOptions();
+
+    // tone marks is default option
     switch (hp.getMode()) {
-      case TONE_MARKS:
-        this.optionsToneMarks.setSelected(true);
+      case TONE_NUMBERS:
+        this.optionsToneNumbers.setSelected(true);
         break;
       case TONES_OFF:
         this.optionsTonesOff.setSelected(true);
         break;
       default:
-        this.optionsToneNumbers.setSelected(true);
+        this.optionsToneMarks.setSelected(true);
         break;
     }
 
@@ -400,11 +434,25 @@ public class HanziToPinyin extends javax.swing.JFrame {
     }
 
     public void keyPressed(KeyEvent e) {
-      // leave empty
+
+      // if Ctrl + V or Meta + V, then auto-convert just once.
+      if ((e.getKeyCode() == KeyEvent.VK_V)
+          && ((e.getModifiers() & (KeyEvent.CTRL_MASK | KeyEvent.META_MASK)) != 0)) {
+        pasteAndConvertEnabled = true;
+      }
     }
 
     public void keyReleased(KeyEvent e) {
-      // leave empty
+
+      // temporary auto-convert feature (with a latch)
+      if (pasteAndConvertEnabled) {
+        convertInput();
+
+        // reset
+        pasteAndConvertEnabled = false;
+      }
+
+
     }
   };
 

@@ -13,9 +13,9 @@ Hanzi-to-pinyin: Convert Chinese characters to Hanyu Pinyin with display options
 
 ## Features ##
 
-  +  ***NEW*** Paste Convert (Ctrl + V) lets you copy and paste Chinese lyrics or articles with timely, automatic conversion.
-  +  ***NEW*** Preserves newlines and punctuation, like the original app.
-  +  
+  +  ***NEW!*** Paste Convert (Ctrl + V) lets you copy and paste Chinese lyrics or articles with timely, automatic conversion.
+  +  ***NEW!*** Preserves newlines and punctuation, like the original app.
+
   + Hanzi-to-Pinyin conversion tools
   + Perfect for creating Chinese pinyin lyrics for karaoke
   + Simple side-by-side UI

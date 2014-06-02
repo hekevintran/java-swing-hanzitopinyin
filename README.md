@@ -24,6 +24,6 @@ Hanzi-to-pinyin: Convert Chinese characters to Hanyu Pinyin with display options
     + Tone Numbers 
     + Tone Marks (now default)
     + Tones Off
-  + ~Auto-Convert~ 
-    + ~Any changes on the left are instantly displayed on the right.~
-    + ~You can turn of the Auto-Convert feature for very large conversion.~
+  + ~~Auto-Convert~~ 
+    + ~~Any changes on the left are instantly displayed on the right.~~
+    + ~~You can turn of the Auto-Convert feature for very large conversion.~~

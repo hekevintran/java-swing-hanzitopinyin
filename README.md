@@ -1,3 +1,5 @@
+> **NOTE:** For the same functionality without having to install Java on your system, please try the Google Chrome port of this app: https://github.com/pffy/chrome-app-hanzitopinyin (also available in Google Chrome Web Store). Runs on every operating system that support Google Chrome.
+
 java-swing-hanzitopinyin
 ========================
 

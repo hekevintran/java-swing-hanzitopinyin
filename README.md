@@ -1,4 +1,4 @@
-> **NOTE:** For the same functionality without having to install Java on your system, please try the Google Chrome port of this app: https://github.com/pffy/chrome-app-hanzitopinyin (also available in Google Chrome Web Store). ***Runs on every operating system that runs Google Chrome.***
+> **NOTE:** For the same functionality without having to install Java on your system, please try the Google Chrome port of this app: https://github.com/pffy/chrome-app-hanzitopinyin (also available in Google Chrome Web Store). ***Runs on every operating system that runs [Google Chrome][get_chrome] or [Chromium][get_chromium].***
 
 java-swing-hanzitopinyin
 ========================
@@ -42,3 +42,7 @@ Hanzi-to-pinyin: Convert Chinese characters to Hanyu Pinyin with display options
 + Windows 7
 + Mac OS X 10.7.x, 10.8.x, or better
   + https://www.java.com/en/download/
+
+
+[get_chrome]:https://www.google.com/chrome/
+[get_chromium]: https://www.chromium.org/getting-involved/download-chromium

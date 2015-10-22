@@ -30,7 +30,7 @@ Hanzi-to-pinyin: Convert Chinese characters to Hanyu Pinyin with display options
     + Tones Off
   + ~~Auto-Convert~~ 
     + ~~Any changes on the left are instantly displayed on the right.~~
-    + ~~You can turn of the Auto-Convert feature for very large conversion.~~
+    + ~~You can turn off the Auto-Convert feature for very large conversion.~~
 
 ### Dependencies
   + HanyuPinyin object in jar, in `lib` directory

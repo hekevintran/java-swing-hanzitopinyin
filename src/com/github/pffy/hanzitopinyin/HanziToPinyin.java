@@ -41,11 +41,12 @@ import com.github.pffy.chinese.HanyuPinyin;
 import com.github.pffy.chinese.Tone;
 
 /**
- * HanziToPinyin.java - Hanzi-to-Pinyin Converter. Requires Java 7.
- * 
- * @author The Pffy Authors
- * @version 1.2
- * 
+ * name     : HanziToPinyin.java
+ * version  : 1.8
+ * updated  : 2015-10-22
+ * license  : http://unlicense.org/ The Unlicense
+ * git      : https://github.com/pffy/java-swing-hanzitopinyin
+ *
  */
 
 @SuppressWarnings("serial")
@@ -60,7 +61,7 @@ public class HanziToPinyin extends javax.swing.JFrame {
   private final String PRODUCT_NAME = "InPinyin";
   private final String PRODUCT_TITLE = this.PRODUCT_NAME
       + ": Hanzi-to-Pinyin Converter";
-  private final String VERSION = " v1.2";
+  private final String VERSION = " v1.8";
 
   private final String AUTHOR = "The Pffy Authors";
   private final String AUTHOR_URL = "https://github.com/pffy/";
@@ -76,9 +77,7 @@ public class HanziToPinyin extends javax.swing.JFrame {
   private final String MENU_FILE = "File";
   private final String MENU_OPTIONS = "Options";
   private final String MENU_HELP = "Help";
-  private final String MENU_SHORTCUTS =
-      "[F5] Refresh, [F7] Tone Numbers, [F8] Marks, [F9] Off, [Ctrl + V] Paste Convert";
-
+   
   // file menu text
   private final String ITEM_FILE_NEW = "New";
   private final String ITEM_FILE_CONVERT = "Convert / Refresh";
@@ -99,7 +98,12 @@ public class HanziToPinyin extends javax.swing.JFrame {
   private final Dimension DIMENSION_350 = new Dimension(350, 350);
   private final Dimension DIMENSION_600 = new Dimension(600, 600);
 
-  private final int FONT_SIZE_SHORTCUTS = 10;
+  // shortcuts
+  private final int SHORTCUTS_FONT_SIZE = 10;
+  private final String SHORTCUTS_FONT_FACE = "Arial";
+  private final String SHORTCUTS_TEXT =
+	      "[F5] Refresh, [F7] Tone Numbers, [F8] Marks, [F9] Off, [Ctrl/⌘ + V] Paste Convert";
+	 
 
   // OTHER FIELDS
 
@@ -245,13 +249,6 @@ public class HanziToPinyin extends javax.swing.JFrame {
     this.fileNew.setText(this.ITEM_FILE_NEW);
     this.fileNew.addActionListener(this.menuHandler);
 
-    // for Mac OS
-    /*
-     * this.fileNew.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
-     * java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.META_MASK));
-     */
-
-
     this.menuFile.add(this.fileNew);
 
     // file > convert
@@ -271,12 +268,6 @@ public class HanziToPinyin extends javax.swing.JFrame {
     this.fileExit.setText(this.ITEM_FILE_EXIT);
     this.fileExit.addActionListener(this.menuHandler);
 
-
-    /*
-     * // for Mac OS
-     * this.fileExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
-     * java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.META_MASK));
-     */
 
     this.menuFile.add(this.fileExit);
     this.menubarMenu.add(this.menuFile);
@@ -339,9 +330,9 @@ public class HanziToPinyin extends javax.swing.JFrame {
 
     // never enabled shortcuts
     this.menuShortcuts = new javax.swing.JMenu();
-    this.menuShortcuts.setText(this.MENU_SHORTCUTS);
+    this.menuShortcuts.setText(this.SHORTCUTS_TEXT);
     this.menuShortcuts
-        .setFont(new Font("Courier", 0, this.FONT_SIZE_SHORTCUTS));
+        .setFont(new Font(this.SHORTCUTS_FONT_FACE, 0, this.SHORTCUTS_FONT_SIZE));
     this.menuShortcuts.setEnabled(false);
 
     this.menubarMenu.add(this.menuShortcuts);
@@ -435,7 +426,7 @@ public class HanziToPinyin extends javax.swing.JFrame {
 
     public void keyPressed(KeyEvent e) {
 
-      // if Ctrl + V or Meta + V, then auto-convert just once.
+      // if Ctrl + V or Meta/Cmd + V, then auto-convert just once.
       if ((e.getKeyCode() == KeyEvent.VK_V)
           && ((e.getModifiers() & (KeyEvent.CTRL_MASK | KeyEvent.META_MASK)) != 0)) {
         pasteAndConvertEnabled = true;

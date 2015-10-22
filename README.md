@@ -5,7 +5,6 @@ java-swing-hanzitopinyin
 
 Hanzi-to-pinyin: Convert Chinese characters to Hanyu Pinyin with display options.
 
-+ [Production Release! v1.0](https://github.com/pffy/java-swing-hanzitopinyin/releases) **new!**
 + Requires Java 7.
 + Simple. Flexible. Runs on Windows, Mac and Linux. [Learn More](#features). 
 

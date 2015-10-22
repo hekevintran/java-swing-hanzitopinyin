@@ -18,7 +18,7 @@ Hanzi-to-pinyin: Convert Chinese characters to Hanyu Pinyin with display options
 
 ### Features
 
-  + Paste Convert (Ctrl + V) lets you copy and paste Chinese lyrics or articles with timely, automatic conversion.
+  + Paste Convert (Ctrl/⌘ + V) lets you copy and paste Chinese lyrics or articles with timely, automatic conversion.
   + Preserves newlines and punctuation, like the original app.
   + Hanzi-to-Pinyin conversion tools
   + Perfect for creating Chinese pinyin lyrics for karaoke
@@ -43,7 +43,7 @@ Hanzi-to-pinyin: Convert Chinese characters to Hanyu Pinyin with display options
 + Ubuntu Linux
   + Solution here: https://github.com/pffy/java-swing-chinesefrequencylist/issues/3
 
-+ Windows 7
++ Microsoft Windows 7 or newer
 + Mac OS X 10.7.x, 10.8.x, or better
   + https://www.java.com/en/download/
 

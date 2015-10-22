@@ -12,12 +12,12 @@ Hanzi-to-pinyin: Convert Chinese characters to Hanyu Pinyin with display options
 
 [![InPinyin: Hanzi-to-Pinyin Converter Download](https://cloud.githubusercontent.com/assets/7258373/3143416/320f09a6-e9f9-11e3-99ec-5a472a03d723.png)](https://github.com/pffy/java-swing-hanzitopinyin/releases)
 
+[![Paste Convert Feature: Hanzi to Pinyin Converter](https://i.ytimg.com/vi/H3DPi3v6g_I/hqdefault.jpg)](https://www.youtube.com/embed/H3DPi3v6g_I?autoplay=1 "Paste Convert Feature: Hanzi to Pinyin Converter")
 
 ## FEATURES
 
-  +  ***NEW!*** Paste Convert (Ctrl + V) lets you copy and paste Chinese lyrics or articles with timely, automatic conversion.
-  +  ***NEW!*** Preserves newlines and punctuation, like the original app.
-
+  + Paste Convert (Ctrl + V) lets you copy and paste Chinese lyrics or articles with timely, automatic conversion.
+  + Preserves newlines and punctuation, like the original app.
   + Hanzi-to-Pinyin conversion tools
   + Perfect for creating Chinese pinyin lyrics for karaoke
   + Simple side-by-side UI

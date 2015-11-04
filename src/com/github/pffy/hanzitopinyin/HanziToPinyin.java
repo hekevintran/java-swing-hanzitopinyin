@@ -42,8 +42,8 @@ import com.github.pffy.chinese.Tone;
 
 /**
  * name     : HanziToPinyin.java
- * version  : 1.8
- * updated  : 2015-10-22
+ * version  : 1.8.5
+ * updated  : 2015-11-03
  * license  : http://unlicense.org/ The Unlicense
  * git      : https://github.com/pffy/java-swing-hanzitopinyin
  *
@@ -61,7 +61,7 @@ public class HanziToPinyin extends javax.swing.JFrame {
   private final String PRODUCT_NAME = "InPinyin";
   private final String PRODUCT_TITLE = this.PRODUCT_NAME
       + ": Hanzi-to-Pinyin Converter";
-  private final String VERSION = " v1.8";
+  private final String VERSION = " v1.8.5";
 
   private final String AUTHOR = "The Pffy Authors";
   private final String AUTHOR_URL = "https://github.com/pffy/";
